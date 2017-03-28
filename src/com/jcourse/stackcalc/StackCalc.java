@@ -24,41 +24,42 @@ public class StackCalc {
 	}
 
 	public void execute() throws IOException {
-		Map<String, Double> environment = new HashMap<>();
-		Stack stack = new Stack();
-		Map<String, Command> commands = getCommands();
+        Map<String, Double> environment = new HashMap<>();
+        Stack stack = new Stack();
+        Map<String, Command> commands = getCommands();
 
-		List<String> lines = readLines();
+        List<String> lines = readLines();
 
-		for (final String line : lines) { //разбор из файла
-	//		if (line[0] == '#') { continue;} //Комментарии
-			int spaceIndex = line.indexOf(' ');
-			String cmd;
-			String arg;
+        for (final String line : lines) { //разбор из файла
+            if (line.toCharArray()[0] == '#') { continue;}            //Комментарии
+            int spaceIndex = line.indexOf(' ');
+            String cmd;
+            String arg;
 
-			if (spaceIndex > 0) {
-				cmd = line.substring(0, spaceIndex);
-				String parts[] = line.split(" ");
-				if(parts.length > 2) { // define command
-					arg = parts[0];
-					String variable = parts[1];
-					String varValue = parts[2];
-					environment.put(variable, Double.valueOf(varValue));
-				} else {
-					arg = line.substring(spaceIndex + 1);
-				}
-			} else {
-				cmd = line;
-				arg = "";
-			}
-			Command command = commands.get(cmd);
-			if (command == null) {
-				throw new RuntimeException("Command " + cmd + " not found");
-			}
-			command.execute(arg, stack, environment);
-		}
+            if (spaceIndex > 0) {
+                cmd = line.substring(0, spaceIndex);
+                String parts[] = line.split(" ");
+                if (parts.length > 2) { // define command
+                    arg = parts[0];
+                    String variable = parts[1];
+                    String varValue = parts[2];
+                    environment.put(variable, Double.valueOf(varValue));
+                } else {
+                    arg = line.substring(spaceIndex + 1);
+                }
+            } else {
+                cmd = line;
+                arg = "";
+            }
+            Command command = commands.get(cmd);
+            if (command == null) {
+                throw new RuntimeException("Command " + cmd + " not found");
+            }
+            command.execute(arg, stack, environment);
+        }
+    }
 
-	}
+
 
 	private Map<String, Command> getCommands() {
 		HashMap<String, Command> result = new HashMap<>();
@@ -87,9 +88,11 @@ public class StackCalc {
 		SqrtCommand sqrtCommand = new SqrtCommand ();
 		result.put(sqrtCommand.getName(), sqrtCommand);
 
+        MultCommand multCommand = new MultCommand ();
+        result.put(multCommand.getName(), multCommand);
 
 
-		return result;
+        return result;
 	}
 
 	private List<String> readLines() throws IOException {
